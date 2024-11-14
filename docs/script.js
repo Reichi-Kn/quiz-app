@@ -16,6 +16,33 @@ const questions = [
             { text: "札幌", correct: false },
             { text: "福岡", correct: false }
         ]
+    },
+    {
+        question: "太陽系で最も大きな惑星はどれですか？",
+        answers: [
+            { text: "地球", correct: false },
+            { text: "火星", correct: false },
+            { text: "木星", correct: true },
+            { text: "金星", correct: false }
+        ]
+    },
+    {
+        question: "日本の最長の川は何ですか？",
+        answers: [
+            { text: "信濃川", correct: true },
+            { text: "長良川", correct: false },
+            { text: "利根川", correct: false },
+            { text: "石狩川", correct: false }
+        ]
+    },
+    {
+        question: "エベレスト山の標高は何メートルですか？",
+        answers: [
+            { text: "8848メートル", correct: true },
+            { text: "5000メートル", correct: false },
+            { text: "10000メートル", correct: false },
+            { text: "7500メートル", correct: false }
+        ]
     }
 ];
 
@@ -33,7 +60,6 @@ const scoreContainer = document.getElementById('score-container');
 startButton.addEventListener('click', startQuiz);
 
 function startQuiz() {
-    // クイズを開始する前に初期化
     currentQuestionIndex = 0;
     score = 0;
     startScreen.classList.add('hide');
@@ -43,7 +69,7 @@ function startQuiz() {
     scoreContainer.classList.add('hide');
     nextButton.classList.add('hide');
     nextButton.textContent = "次へ";  // 「次へ」ボタンに設定
-    nextButton.removeEventListener('click', startQuiz);  // イベントリセット
+    nextButton.removeEventListener('click', restartQuiz);  // イベントリセット
     showQuestion(questions[currentQuestionIndex]);
 }
 
@@ -52,7 +78,9 @@ function showQuestion(question) {
     answerButtons.innerHTML = '';
     feedbackMessage.textContent = ''; 
 
-    question.answers.forEach(answer => {
+    const shuffledAnswers = shuffleArray(question.answers);
+
+    shuffledAnswers.forEach(answer => {
         const button = document.createElement('button');
         button.innerText = answer.text;
         button.classList.add('btn');
@@ -64,10 +92,19 @@ function showQuestion(question) {
     });
 }
 
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
 function selectAnswer(e) {
     const selectedButton = e.target;
     const correct = selectedButton.dataset.correct === 'true';
 
+    // フィードバックメッセージの表示
     if (correct) {
         feedbackMessage.textContent = "正解！";
         feedbackMessage.classList.add('correct');
@@ -77,17 +114,21 @@ function selectAnswer(e) {
         feedbackMessage.textContent = "不正解…";
         feedbackMessage.classList.add('incorrect');
         feedbackMessage.classList.remove('correct');
+        // 正しい答えも表示
+        const correctAnswer = Array.from(answerButtons.children).find(button => button.dataset.correct === 'true');
+        feedbackMessage.textContent += ` 正解は「${correctAnswer.innerText}」です。`;
     }
     feedbackMessage.classList.remove('hide');
 
     currentQuestionIndex++;
-
-    // 最後の問題が終わった後にスコア表示をする
     if (currentQuestionIndex < questions.length) {
         nextButton.classList.remove('hide');
+        nextButton.textContent = "次へ"; 
         nextButton.addEventListener('click', showNextQuestion);
     } else {
-        showScore();
+        nextButton.textContent = "スコアを表示";
+        nextButton.classList.remove('hide');
+        nextButton.addEventListener('click', showScore);
     }
 }
 
@@ -103,8 +144,17 @@ function showScore() {
     feedbackMessage.classList.add('hide');
     scoreContainer.textContent = `あなたのスコア: ${score} / ${questions.length}`;
     scoreContainer.classList.remove('hide');
-    nextButton.textContent = "スコアを表示";
+    nextButton.textContent = "もう一度";
     nextButton.classList.remove('hide');
-    nextButton.removeEventListener('click', showNextQuestion); // イベントリセット
-    nextButton.addEventListener('click', startQuiz);  // もう一度押すと再スタート
+    nextButton.removeEventListener('click', showScore);
+    nextButton.addEventListener('click', restartQuiz);
+}
+
+function restartQuiz() {
+    scoreContainer.classList.add('hide');
+    nextButton.classList.add('hide');
+    startScreen.classList.remove('hide');
+    questionContainer.classList.add('hide');
+    answerButtons.classList.add('hide');
+    feedbackMessage.classList.add('hide');
 }
