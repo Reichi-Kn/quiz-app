@@ -4,146 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>クイズアプリ</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .question-container {
-            display: none;
-        }
-        .score-container {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="start-screen">
-        <h1>クイズを始めよう！</h1>
-        <button id="start-btn">スタート</button>
-    </div>
-
     <div id="quiz-container">
-        <div id="question-container" class="question-container">
-            <h2 id="question-text"></h2>
-            <button class="answer-btn" onclick="checkAnswer(0)"></button>
-            <button class="answer-btn" onclick="checkAnswer(1)"></button>
-            <button class="answer-btn" onclick="checkAnswer(2)"></button>
-            <button class="answer-btn" onclick="checkAnswer(3)"></button>
+        <h1>クイズアプリ</h1>
+        <div id="start-screen">
+            <p>準備はできましたか？</p>
+            <button id="start-button" class="btn">スタート</button>
         </div>
-        <div id="result-container" class="question-container">
-            <h2 id="result-text"></h2>
-            <button id="next-btn">次の問題</button>
-        </div>
-        <div id="score-container" class="score-container">
-            <h2>あなたのスコア: <span id="final-score"></span> / 5</h2>
-            <button id="restart-btn">もう一度</button>
-        </div>
+        <div id="question-container" class="hide"></div>
+        <div id="answer-buttons" class="btn-container hide"></div>
+        <div id="feedback-message" class="feedback hide"></div>
+        <div id="score-container" class="hide"></div>
+        <button id="next-button" class="btn hide">次へ</button>
     </div>
-
-    <script>
-        const questions = [
-            {
-                question: "次のうち、HTMLのタグはどれ？",
-                answers: ["<div>", "<section>", "<header>", "<body>"],
-                correctAnswer: 0
-            },
-            {
-                question: "CSSでスタイルを設定するタグは？",
-                answers: ["<link>", "<style>", "<meta>", "<css>"],
-                correctAnswer: 1
-            },
-            {
-                question: "JavaScriptは何に使われる？",
-                answers: ["Webサイトのデザイン", "Webサイトの構造", "Webサイトの動作", "WebサイトのURL"],
-                correctAnswer: 2
-            },
-            {
-                question: "CSSのプロパティで背景色を変更するものは？",
-                answers: ["color", "background-color", "font-size", "text-align"],
-                correctAnswer: 1
-            },
-            {
-                question: "JavaScriptで変数を定義するキーワードは？",
-                answers: ["let", "var", "const", "全て"],
-                correctAnswer: 3
-            }
-        ];
-
-        let currentQuestionIndex = 0;
-        let score = 0;
-
-        // スタートボタンのクリックイベント
-        document.getElementById("start-btn").addEventListener("click", startQuiz);
-
-        // 次の問題ボタンのクリックイベント
-        document.getElementById("next-btn").addEventListener("click", nextQuestion);
-
-        // リスタートボタンのクリックイベント
-        document.getElementById("restart-btn").addEventListener("click", restartQuiz);
-
-        function startQuiz() {
-            document.getElementById("start-screen").style.display = "none";
-            document.getElementById("quiz-container").style.display = "block";
-            showQuestion();
-        }
-
-        function showQuestion() {
-            const question = questions[currentQuestionIndex];
-            document.getElementById("question-text").textContent = question.question;
-
-            // それぞれの選択肢に答えをセット
-            const buttons = document.querySelectorAll(".answer-btn");
-            buttons.forEach((button, index) => {
-                button.textContent = question.answers[index];
-            });
-
-            // 問題表示
-            document.getElementById("question-container").style.display = "block";
-            document.getElementById("result-container").style.display = "none";
-        }
-
-        function checkAnswer(answerIndex) {
-            const question = questions[currentQuestionIndex];
-            const isCorrect = answerIndex === question.correctAnswer;
-            const resultText = isCorrect ? "正解!" : "不正解!";
-            document.getElementById("result-text").textContent = resultText;
-
-            if (isCorrect) {
-                score++;
-            }
-
-            // 結果表示
-            document.getElementById("question-container").style.display = "none";
-            document.getElementById("result-container").style.display = "block";
-
-            // 最後の問題の場合、次のボタンをスコア表示ボタンに変更
-            if (currentQuestionIndex === questions.length - 1) {
-                document.getElementById("next-btn").style.display = "none";
-                document.getElementById("score-container").style.display = "block";
-                document.getElementById("final-score").textContent = score;
-            }
-        }
-
-        function nextQuestion() {
-            currentQuestionIndex++;
-
-            // 最後の問題に到達した場合、スコア表示に切り替え
-            if (currentQuestionIndex < questions.length) {
-                showQuestion();
-            } else {
-                document.getElementById("question-container").style.display = "none";
-                document.getElementById("result-container").style.display = "none";
-                document.getElementById("score-container").style.display = "block";
-                document.getElementById("final-score").textContent = score;
-            }
-        }
-
-        function restartQuiz() {
-            currentQuestionIndex = 0;
-            score = 0;
-            document.getElementById("score-container").style.display = "none";
-            document.getElementById("start-screen").style.display = "block";
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -81,6 +81,8 @@ function selectAnswer(e) {
     feedbackMessage.classList.remove('hide');
 
     currentQuestionIndex++;
+
+    // 最後の問題が終わった後にスコア表示をする
     if (currentQuestionIndex < questions.length) {
         nextButton.classList.remove('hide');
         nextButton.addEventListener('click', showNextQuestion);
@@ -101,7 +103,7 @@ function showScore() {
     feedbackMessage.classList.add('hide');
     scoreContainer.textContent = `あなたのスコア: ${score} / ${questions.length}`;
     scoreContainer.classList.remove('hide');
-    nextButton.textContent = "もう一度";
+    nextButton.textContent = "スコアを表示";
     nextButton.classList.remove('hide');
     nextButton.removeEventListener('click', showNextQuestion); // イベントリセット
     nextButton.addEventListener('click', startQuiz);  // もう一度押すと再スタート
